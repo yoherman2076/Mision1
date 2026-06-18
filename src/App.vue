@@ -1,0 +1,99 @@
+<template>
+    <main>
+        <h1>{{ message }}</h1>
+        <TaskForm @add-task="addTask" />
+        <h3 v-if="!tasks.length">Add a task, wacho.</h3>
+        <h3 v-else>{{ totalDone }} / {{ tasks.length }} tasks completed.</h3>
+        <div v-if="tasks.length" class="button-cont">
+            <FilterButto2 filter="all" @set-filter="setFilter" />
+            <FilterButton2 filter="todo" @set-filter="setFilter"/>
+            <FilterButton2 filter="done" @set-filter="setFilter" />
+        </div>
+        <TaskList :tasks="filteredTasks" @toggle-done="toggleDone" @remove-task="removeTask" />
+    </main>
+</template>
+
+<script lang="ts" setup>
+import { computed, ref, watch, onMounted } from 'vue';
+import TaskForm from './components/TaskForm.vue';
+import type { Task, TaskFilter } from './types/types.ts';
+import TaskList from './components/TaskList.vue';
+import FilterButton2 from './components/FilterButton2.vue';
+
+const tasks = ref<Task[]>([]);
+onMounted(() => {
+    const savedTasks = localStorage.getItem("tasks");
+    if (savedTasks) {
+        tasks.value = JSON.parse(savedTasks)
+    }
+});
+
+const message = ref("Task App");
+const filter = ref<TaskFilter>("all");
+
+const totalDone = computed(() => tasks
+    .value
+    .reduce((total, task) => task.done ? total + 1 : total, 0));
+
+const filteredTasks = computed(() => {
+    switch(filter.value) {
+        case "all":
+            return tasks.value;
+        case "done":
+            return tasks.value.filter((task) => task.done);
+        case "todo":
+            return tasks.value.filter((task) => !task.done);
+    }
+    return tasks.value;
+})
+
+watch(
+    tasks,
+    (newTasks) => {
+        localStorage.setItem("tasks", JSON.stringify(newTasks));
+    },
+    { deep: true}
+);
+
+function addTask(newTask: string)  {
+    tasks.value.push({
+        id: Date.now().toString(),
+        title: newTask,
+        done: false,
+    });
+}
+
+function toggleDone(id: string) {
+    const task = tasks.value.find((task) => task.id === id)
+    if (task) {
+        task.done = !task.done;
+    }
+}
+
+function removeTask(id: string) {
+    const index = tasks.value.findIndex((task) => task.id === id);
+    if (index !== -1) {
+        tasks.value.splice(index, 1);
+    }
+}
+
+function setFilter(value: TaskFilter) {
+    filter.value = value;
+}
+
+
+
+</script>
+
+<style>
+main {
+    max-width: 800px;
+    margin: 1rem auto;
+}
+
+.button-cont {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+}
+</style>

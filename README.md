@@ -49,48 +49,10 @@ npm run dev
 
 Una vez se nos ha creado el proyecto tendrá esta estructura:
 
-[Captura estructura proyecto]
+<img width="237" height="827" alt="image" src="https://github.com/user-attachments/assets/69cfe47e-721c-4847-8aa4-0e2e92dd8e16" />
+
 
 Esta es la estructura predeterminada de **Vue**.
 
 ---
 
-# Modificaciones del código
-
-En el `App.vue` tendremos que añadir el componente que cambiará el contenido del template:
-
-**App.vue**
-```vue
-<script setup lang="ts">
-import HelloUser from './components/HelloUser.vue';
-</script>
-
-<template>
-	<HelloUser />
-</template>
-```
-
-Y en el componente `HelloUser.vue` como tal tendremos que poner la lógica del funcionamiento del botón:
-
-**HelloUser.vue**
-```vue
-<script setup lang="ts">
-import { ref } from 'vue'
-const greeting = ref('Hola, usuario')
-
-function changeGreeting(): void {
-    greeting.value = 'Hola, Herman'
-}
-</script>
-
-<template>
-    <div>
-        <h1>{{ greeting }}</h1>
-        <button @click="changeGreeting">
-            Cambiar saludo
-        </button>
-    </div>
-</template>
-```
-
-Aquí lo que se hace es importar `{ ref }` para luego el contenido de la constante `greeting` se actualice automáticamente cuando se active la función `changeGreeting()`. De esta forma, cuando el botón reciba un click, activará la función y se actualizará el nombre directamente.
