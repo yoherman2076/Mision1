@@ -11,7 +11,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { Task } from './types';
+import type { Task } from '../types/types.ts';
 import TaskItem from './TaskItem.vue'
 
 const props = defineProps<{

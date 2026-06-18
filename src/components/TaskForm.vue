@@ -12,10 +12,10 @@
                 {{ form.error }}
             </small>
         </label>
+        <div class="button-cont">
+            <button>Add Task</button>
+        </div>
     </form>
-    <div class="button-cont">
-        <button>Add Task</button>
-    </div>
 </template>
 
 <script lang="ts" setup>
@@ -36,13 +36,11 @@ const emit = defineEmits<{
     addTask: [newTask: string]
 }>();
 
+// Función maniática.
 function submitForm() {
-    if (form.newTask.trim()) {
-        emit("addTask", form.newTask);
-        form.newTask = "";
-    } else {
-        form.error = "Task can't be empty"
-    }
+    if (!form.newTask.trim()) return form.error = "Task can not be empty."
+    emit("addTask", form.newTask);
+    form.newTask = "";
 }
 </script>
 

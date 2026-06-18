@@ -3,7 +3,7 @@
 </template>
 
 <script setup lang="ts">
-import type { TaskFilter } from './types';
+import type { TaskFilter } from '../types/types';
 
 const props = defineProps<{
     filter: TaskFilter;
