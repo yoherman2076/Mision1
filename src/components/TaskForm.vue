@@ -3,13 +3,13 @@
         <label>
             New Task<br>
             <input 
-            v-model="newTask" 
+            v-model="form.newTask" 
             name="newTask" 
-            :aria-invalid="!!error || undefined"
-            @input="error = ''"
+            :aria-invalid="!!form.error || undefined"
+            @input="form.error = ''"
             >
-            <small v-if="error" id="invalid-helper">
-                {{ error }}
+            <small v-if="form.error" id="invalid-helper">
+                {{ form.error }}
             </small>
         </label>
     </form>
@@ -19,22 +19,29 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+// import { ref } from 'vue';
+import { reactive } from 'vue';
 
-const newTask = ref("");
-const error = ref("");
+const form = reactive({
+    newTask: "",
+    error: ""
+});
 
+// Versión con ref:
+// const newTask = ref("");
+// const error = ref("");
+// ---
 
 const emit = defineEmits<{
     addTask: [newTask: string]
 }>();
 
 function submitForm() {
-    if (newTask.value.trim()) {
-        emit("addTask", newTask.value);
-        newTask.value = "";
+    if (form.newTask.trim()) {
+        emit("addTask", form.newTask);
+        form.newTask = "";
     } else {
-        error.value = "Task can't be empty"
+        form.error = "Task can't be empty"
     }
 }
 </script>

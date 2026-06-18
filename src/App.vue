@@ -1,8 +1,8 @@
 <template>
     <main>
         <h1>{{ message }}</h1>
-        <TaskForm @add-Task="addTask" />
-        <h3 v-if="!tasks.length">Add a task :)</h3>
+        <TaskForm @add-task="addTask" />
+        <h3 v-if="!tasks.length">Add a task, wacho.</h3>
         <h3 v-else>{{ totalDone }} / {{ tasks.length }} tasks completed.</h3>
         <div v-if="tasks.length" class="button-cont">
             <FilterButton filter="all" @set-filter="setFilter" />
@@ -14,16 +14,21 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
+import { computed, ref, watch, onMounted } from 'vue';
 import TaskForm from './components/TaskForm.vue';
 import type { Task, TaskFilter } from './components/types';
 import TaskList from './components/TaskList.vue';
-import FilterButton from './components/FIlterButton.vue';
+import FilterButton from './components/FilterButton2.vue';
 
-
+const tasks = ref<Task[]>([]);
+onMounted(() => {
+    const savedTasks = localStorage.getItem("tasks");
+    if (savedTasks) {
+        tasks.value = JSON.parse(savedTasks)
+    }
+});
 
 const message = ref("Task App");
-const tasks = ref<Task[]>([]);
 const filter = ref<TaskFilter>("all");
 
 const totalDone = computed(() => tasks
@@ -42,9 +47,17 @@ const filteredTasks = computed(() => {
     return tasks.value;
 })
 
+watch(
+    tasks,
+    (newTasks) => {
+        localStorage.setItem("tasks", JSON.stringify(newTasks));
+    },
+    { deep: true}
+);
+
 function addTask(newTask: string)  {
     tasks.value.push({
-        id: crypto.randomUUID(),
+        id: Date.now().toString(),
         title: newTask,
         done: false,
     });
